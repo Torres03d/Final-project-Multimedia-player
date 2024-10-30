@@ -1,11 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QTimer>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     Player = new QMediaPlayer();
     audioOutput = new QAudioOutput();
     Player->setAudioOutput(audioOutput);
@@ -24,17 +27,31 @@ MainWindow::MainWindow(QWidget *parent)
     // Inicializacion media title label
     mediaTitleLabel = ui->label_Title;
 
-    // Señales de Coneccion para los slots
+    // Configurar timer para actualización del tiempo
+    timeUpdateTimer = new QTimer(this);
+    timeUpdateTimer->setInterval(1000); // Actualiza cada 1000 ms
+    connect(timeUpdateTimer, &QTimer::timeout, this, &MainWindow::updateCurrentTimeDisplay);
+    timeUpdateTimer->start();
+
+    // Conectar señales del Player
     connect(Player, &QMediaPlayer::durationChanged, this, &MainWindow::durationChanged);
     connect(Player, &QMediaPlayer::positionChanged, this, &MainWindow::positionChanged);
 
-
+    // Inicializar flag
+    isUpdatingSlider = false;
 }
 
 // Destructor de la clase MainWindow
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+// Funcion que ayuda a actualizar el contador de tiempo
+void MainWindow::updateTime()
+{
+    qint64 current = Player->position() / 1000;
+    updateCurrentTime(current);
 }
 
 // Función para cuando la duración del medio cambia
@@ -46,16 +63,16 @@ void MainWindow::durationChanged(quint64 duration)
 }
 
 // Función para cuando la posición del medio cambia
-void MainWindow::positionChanged(quint64 duration)
+void MainWindow::positionChanged(quint64 position)
 {
-    if (!ui->horizontalSlider_Duration->isSliderDown())
+    if (!isUpdatingSlider && !ui->horizontalSlider_Duration->isSliderDown())
     {
-        ui->horizontalSlider_Duration->setValue(duration / 1000);
+        ui->horizontalSlider_Duration->setValue(position / 1000);
+        updateCurrentTime(position / 1000); // Añadido para mantener etiquetas sincronizadas
     }
-    updateCurrentTime(duration / 1000);
 }
 
-// Funcion para el contador de tiempo
+// Funcion que actualiza el contador de tiempo
 void MainWindow::updateCurrentTime(qint64 current)
 {
     QTime currentTime((current / 3600) % 60, (current / 60) % 60, (current % 60));
@@ -71,7 +88,7 @@ void MainWindow::updateTotalTime(qint64 total)
     ui->label_Total_Time->setText(totalTime.toString(format));
 }
 
-// Abre el buscador de archivos para seleccionar un archivo multimedia
+// Funcion para abrir el buscador de archivos para seleccionar un archivo multimedia
 void MainWindow::on_action_Open_triggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Media"), "",
@@ -104,43 +121,47 @@ void MainWindow::displayMedia(const QString& fileName, bool isVideo)
     mediaTitleLabel->setText(QFileInfo(fileName).baseName());
 }
 
- // Maneja el click en el botón de play
+// Maneja el click en el botón de play
 void MainWindow::on_pushButton_Play_clicked()
 {
-    if (IS_Pause == true)
+    if (IS_Pause)
     {
         IS_Pause = false;
         Player->play();
+        connect(Player, &QMediaPlayer::positionChanged, this, &MainWindow::updateTime); // Conectar actualización de tiempo en reproducción
         ui->pushButton_Play->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
     }
     else
     {
         IS_Pause = true;
         Player->pause();
+        disconnect(Player, &QMediaPlayer::positionChanged, this, &MainWindow::updateTime); // Desconectar actualización de tiempo en pausa
         ui->pushButton_Play->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     }
 }
 
- // Maneja el click en el botón de stop
+// Maneja el click en el botón de stop
 void MainWindow::on_pushButton_Stop_clicked()
 {
     Player->stop();
+    disconnect(Player, &QMediaPlayer::positionChanged, this, &MainWindow::updateTime); // Desconectar actualización de tiempo en stop
 }
+
 
 // Maneja el boton en el volumen
 void MainWindow::on_pushButton_Volume_clicked()
 {
-    if (IS_Muted == false)
-    {
-        IS_Muted = true;
-        ui->pushButton_Volume->setIcon(style()->standardIcon(QStyle::SP_MediaVolumeMuted));
-        audioOutput->setMuted(true);
-    }
-    else
+    if (IS_Muted)
     {
         IS_Muted = false;
         ui->pushButton_Volume->setIcon(style()->standardIcon(QStyle::SP_MediaVolume));
         audioOutput->setMuted(false);
+    }
+    else
+    {
+        IS_Muted = true;
+        ui->pushButton_Volume->setIcon(style()->standardIcon(QStyle::SP_MediaVolumeMuted));
+        audioOutput->setMuted(true);
     }
 }
 
@@ -153,7 +174,10 @@ void MainWindow::on_horizontalSlider_Volume_valueChanged(int value)
 // Maneja el cambio en el volumen
 void MainWindow::on_horizontalSlider_Duration_valueChanged(int value)
 {
-    Player->setPosition(value * 1000);
+    if (IS_Pause || !Player->isPlaying())
+    {
+        Player->setPosition(value * 1000);
+    }
 }
 
 // Retrocede la reproducción
@@ -168,4 +192,18 @@ void MainWindow::on_pushButton_Seek_Forward_clicked()
 {
     ui->horizontalSlider_Duration->setValue(ui->horizontalSlider_Duration->value() + 20);
     Player->setPosition(ui->horizontalSlider_Duration->value() * 1000);
+}
+
+// Funcion que realiza la conversion del contador
+void MainWindow::updateCurrentTimeDisplay()
+{
+    qint64 current = Player->position();
+    QTime currentTime((current / 3600) % 60, (current / 60) % 60, (current % 60));
+    QString format = (currentTime.hour() > 0) ? "hh:mm:ss" : "mm:ss";
+    ui->label_Current_Time->setText(currentTime.toString(format));
+
+    if (!ui->horizontalSlider_Duration->isSliderDown())
+    {
+        ui->horizontalSlider_Duration->setValue(current / 1000);
+    }
 }
