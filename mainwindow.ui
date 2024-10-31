@@ -14,188 +14,193 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QGroupBox" name="groupBox_Display">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>40</y>
-      <width>760</width>
-      <height>321</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true"/>
-    </property>
-    <property name="title">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_Title">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>360</y>
-      <width>760</width>
-      <height>40</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>18</pointsize>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Song Title</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_Seek_Backward">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>420</y>
-      <width>41</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string>QPushButton { color: white; background: transparent; }</string>
-    </property>
-    <property name="text">
-     <string>&lt;</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_Play">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>420</y>
-      <width>41</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string>QPushButton { color: white; background: transparent; }</string>
-    </property>
-    <property name="text">
-     <string>&gt;</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_Stop">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>420</y>
-      <width>41</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string>QPushButton { color: white; background: transparent; }</string>
-    </property>
-    <property name="text">
-     <string>[]</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_Seek_Forward">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>420</y>
-      <width>41</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string>QPushButton { color: white; background: transparent; }</string>
-    </property>
-    <property name="text">
-     <string>&gt;&gt;</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_Volume">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>420</y>
-      <width>41</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string>QPushButton { color: white; background: transparent; }</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QSlider" name="horizontalSlider_Duration">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>480</y>
-      <width>611</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Orientation::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QSlider" name="horizontalSlider_Volume">
-    <property name="geometry">
-     <rect>
-      <x>600</x>
-      <y>430</y>
-      <width>181</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Orientation::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_Current_Time">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>480</y>
-      <width>51</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>00:00:00</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_Total_Time">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>480</y>
-      <width>51</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>00:00:00</string>
-    </property>
-   </widget>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QGroupBox" name="groupBox_Display">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="title">
+       <string/>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QVideoWidget" name="videoWidget" native="true"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_Title">
+        <property name="font">
+         <font>
+          <pointsize>18</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Song Title</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="pushButton_Seek_Backward">
+          <property name="styleSheet">
+           <string notr="true">
+QPushButton#pushButton_Seek_Backward {
+    background-color: transparent;
+    background: none;
+    border: none;
+    qproperty-icon: url(:/Icons/back.png);
+    qproperty-iconSize: 24px 24px;
+}
+           </string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_Play">
+          <property name="styleSheet">
+           <string notr="true">
+QPushButton#pushButton_Play {
+    background-color: transparent;
+    background: none;
+    border: none;
+    qproperty-icon: url(:/Icons/play.png);
+    qproperty-iconSize: 24px 24px;
+}
+QPushButton#pushButton_Play:checked {
+    qproperty-icon: url(:/Icons/pause.png);
+}
+           </string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_Stop">
+          <property name="styleSheet">
+           <string notr="true">
+QPushButton#pushButton_Stop {
+    background-color: transparent;
+    background: none;
+    border: none;
+    qproperty-icon: url(:/Icons/stop.png);
+    qproperty-iconSize: 24px 24px;
+}
+           </string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_Seek_Forward">
+          <property name="styleSheet">
+           <string notr="true">
+QPushButton#pushButton_Seek_Forward {
+    background-color: transparent;
+    background: none;
+    border: none;
+    qproperty-icon: url(:/Icons/forward.png);
+    qproperty-iconSize: 24px 24px;
+}
+           </string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_Volume">
+          <property name="styleSheet">
+           <string notr="true">
+QPushButton#pushButton_Volume {
+    background-color: transparent;
+    background: none;
+    border: none;
+    qproperty-icon: url(:/Icons/volume.png);
+    qproperty-iconSize: 24px 24px;
+}
+QPushButton#pushButton_Volume:checked {
+    qproperty-icon: url(:/Icons/mute.png);
+}
+           </string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="horizontalSlider_Volume">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_Current_Time">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>00:00:00</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="horizontalSlider_Duration">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_Total_Time">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>00:00:00</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -210,17 +215,24 @@
     <property name="title">
      <string>Selec Video File</string>
     </property>
-    <addaction name="actionOpen"/>
+    <addaction name="action_Open"/>
    </widget>
    <addaction name="menuSelec_Video_File"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionOpen">
+  <action name="action_Open">
    <property name="text">
     <string>Open</string>
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QVideoWidget</class>
+   <extends>QWidget</extends>
+   <header>qvideowidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
