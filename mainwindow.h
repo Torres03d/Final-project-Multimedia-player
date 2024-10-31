@@ -21,6 +21,8 @@ public:
     ~MainWindow();
 
 private slots:
+    void on_horizontalSlider_Duration_sliderPressed(); // Llamada cuando se cambia la barra de duracion
+    void on_horizontalSlider_Duration_sliderReleased(); // Llamada ajustar el audio al precionar barra de duracion
     void updateTime(); // stot para actializar el contador
     void durationChanged(quint64 duration); // Llamada cuando la duración cambia
     void positionChanged(quint64 duration); // Llamada cuando la posición cambia
