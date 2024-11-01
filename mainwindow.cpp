@@ -9,9 +9,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    Player = new QMediaPlayer();
-    audioOutput = new QAudioOutput();
-    Player->setAudioOutput(audioOutput);
+    //Título de la ventana
+    this->setWindowTitle("Vector Sound");
+
+    //Icono de la ventana
+    this->setWindowIcon(QIcon(":/Icons/logo.png"));
+
+    // Escondemos inicialmente la barra de volumen vertical
+    ui->verticalSlider_Volume->setVisible(false);
 
     // Inicializacion video widget
     videoWidget = ui->videoWidget;
@@ -33,13 +38,20 @@ MainWindow::MainWindow(QWidget *parent)
     timeUpdateTimer->start();
 
     // Conectar señales del Player
+    Player = new QMediaPlayer();
+    audioOutput = new QAudioOutput();
+    Player->setAudioOutput(audioOutput);
+
+    // Conectar señales del Player
     connect(Player, &QMediaPlayer::durationChanged, this, &MainWindow::durationChanged);
     connect(Player, &QMediaPlayer::positionChanged, this, &MainWindow::positionChanged);
-
     isUpdatingSlider = false;
 
     connect(ui->horizontalSlider_Duration, &QSlider::sliderPressed, this, &MainWindow::on_horizontalSlider_Duration_sliderPressed);
     connect(ui->horizontalSlider_Duration, &QSlider::sliderReleased, this, &MainWindow::on_horizontalSlider_Duration_sliderReleased);
+
+    // Filtro de eventos para el botón de volumen
+    ui->pushButton_Volume->installEventFilter(this);
 }
 
 // Destructor de la clase MainWindow
@@ -103,7 +115,6 @@ void MainWindow::on_action_Open_triggered()
                                                     tr("Multimedia Files (*.mp3 *.mp4 *.wav *.avi)"));
     if (fileName.isEmpty())
         return;
-
     bool isVideo = fileName.endsWith(".mp4") || fileName.endsWith(".avi");
     displayMedia(fileName, isVideo);
 }
@@ -129,7 +140,7 @@ void MainWindow::displayMedia(const QString& fileName, bool isVideo)
     mediaTitleLabel->setText(QFileInfo(fileName).baseName());
 }
 
-// Maneja el click en el botón de play
+// Funcion que maneja el click en el botón de play
 void MainWindow::on_pushButton_Play_clicked()
 {
     if (ui->pushButton_Play->isChecked())
@@ -146,13 +157,14 @@ void MainWindow::on_pushButton_Play_clicked()
     }
 }
 
-// Maneja el click en el botón de stop
-void MainWindow::on_pushButton_Stop_clicked()
+// Funcion que maneja el click en el botón de repetición
+void MainWindow::on_pushButton_Repeat_clicked()
 {
     Player->stop();
     disconnect(Player, &QMediaPlayer::positionChanged, this, &MainWindow::updateTime); // Desconectar actualización de tiempo en stop
 }
 
+// Funcion que maneja el click en el botón de volumen
 void MainWindow::on_pushButton_Volume_clicked()
 {
     if (ui->pushButton_Volume->isChecked())
@@ -169,7 +181,7 @@ void MainWindow::on_pushButton_Volume_clicked()
     }
 }
 
-// Maneja el boton en el volumen
+// Maneja el barra en el volumen
 void MainWindow::on_horizontalSlider_Volume_valueChanged(int value)
 {
     audioOutput->setVolume(value / 100.0);  // Ajusta el volumen
@@ -213,9 +225,44 @@ void MainWindow::updateCurrentTimeDisplay()
     updateCurrentTime(current / 1000);
 }
 
-//funcion que actualiza el tiempo actual
+// Funcion que actualiza el tiempo actual
 void MainWindow::updateTime()
 {
     qint64 current = Player->position() / 1000;
     updateCurrentTime(current);
+}
+
+// Funcion que muestra la barra de Volumen
+void MainWindow::showVolumeSlider()
+{
+    ui->verticalSlider_Volume->setVisible(true);
+}
+
+// Funcion que oculta la barra de Volumen
+void MainWindow::hideVolumeSlider()
+{
+    ui->verticalSlider_Volume->setVisible(false);
+}
+
+bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched == ui->pushButton_Volume)
+    {
+        if (event->type() == QEvent::Enter)
+        {
+            showVolumeSlider();
+        }
+        else if (event->type() == QEvent::Leave)
+        {
+            hideVolumeSlider();
+        }
+    }
+    return QMainWindow::eventFilter(watched, event);
+}
+
+// Funcion para el manejo de eventos
+void MainWindow::leaveEvent(QEvent *event)
+{
+    ui->verticalSlider_Volume->setVisible(false);
+    QMainWindow::leaveEvent(event);
 }
