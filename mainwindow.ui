@@ -14,11 +14,11 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QListWidget" name="listWidget">
+   <widget class="QListWidget" name="playlist">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>10</y>
+      <x>160</x>
+      <y>40</y>
       <width>256</width>
       <height>192</height>
      </rect>
@@ -27,8 +27,8 @@
    <widget class="QPushButton" name="btnPlay">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>210</y>
+      <x>140</x>
+      <y>250</y>
       <width>80</width>
       <height>24</height>
      </rect>
@@ -40,8 +40,8 @@
    <widget class="QPushButton" name="btnPause">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>210</y>
+      <x>240</x>
+      <y>250</y>
       <width>80</width>
       <height>24</height>
      </rect>
@@ -53,8 +53,8 @@
    <widget class="QPushButton" name="btnStop">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>210</y>
+      <x>340</x>
+      <y>250</y>
       <width>80</width>
       <height>24</height>
      </rect>
@@ -66,8 +66,8 @@
    <widget class="QPushButton" name="btnLoad">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>210</y>
+      <x>430</x>
+      <y>250</y>
       <width>80</width>
       <height>24</height>
      </rect>
