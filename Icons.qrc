@@ -7,5 +7,6 @@
         <file>Icons/play.png</file>
         <file>Icons/repeat.png</file>
         <file>Icons/volume.png</file>
+        <file>Icons/logo.png</file>
     </qresource>
 </RCC>
