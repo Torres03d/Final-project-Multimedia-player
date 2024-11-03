@@ -35,7 +35,8 @@ private slots:
     void on_pushButton_Play_clicked(); // Maneja la reproducción
     void on_pushButton_Repeat_clicked(); // Maneja el botón de repeticion
     void on_pushButton_Volume_clicked(); // Cambia el volumen
-    void on_horizontalSlider_Volume_valueChanged(int value); // Cambia la posición de reproducción
+    void on_horizontalSlider_Volume_valueChanged(int value); // Cambia la posición de la barra de volumen
+    void toggleVolumeSlider(bool checked); // Funcion para el manejo de la barra de volumen
     void on_horizontalSlider_Duration_valueChanged(int value); // Cambia duración reproducción
     void on_action_Open_triggered(); // Abre el diálogo de archivo
     void on_pushButton_Seek_Backward_clicked(); // Retrocede 10 segundos
