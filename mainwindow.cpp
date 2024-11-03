@@ -17,11 +17,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Escondemos inicialmente la barra de volumen vertical
     ui->verticalSlider_Volume->setVisible(false);
+    ui->verticalSlider_Volume->move(ui->pushButton_Volume->x(), ui->pushButton_Volume->y() - ui->verticalSlider_Volume->height());
 
-    // Inicializacion video widget
+    // Inicialización del video widget
     videoWidget = ui->videoWidget;
-    albumArtLabel = new QLabel(this);
+    albumArtLabel = new QLabel(videoWidget);
     albumArtLabel->setAlignment(Qt::AlignCenter);
+    albumArtLabel->setGeometry(0, 0, videoWidget->width(), videoWidget->height());
     albumArtLabel->hide();
     mediaTitleLabel = ui->label_Title;
 
@@ -33,22 +35,24 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Configurar timer para actualización del tiempo
     timeUpdateTimer = new QTimer(this);
-    timeUpdateTimer->setInterval(1000); // Actualiza cada 1000 ms
+    timeUpdateTimer->setInterval(1000);
     connect(timeUpdateTimer, &QTimer::timeout, this, &MainWindow::updateCurrentTimeDisplay);
     timeUpdateTimer->start();
 
-    // Conectar señales del Player
-    Player = new QMediaPlayer();
+    // Conectares de señales del Player
+    Player = new QMediaPlayer(this);
     audioOutput = new QAudioOutput();
     Player->setAudioOutput(audioOutput);
-
-    // Conectar señales del Player
+    Player->setVideoOutput(videoWidget);
+    
+    // Conectores de señales para las barras
     connect(Player, &QMediaPlayer::durationChanged, this, &MainWindow::durationChanged);
     connect(Player, &QMediaPlayer::positionChanged, this, &MainWindow::positionChanged);
     isUpdatingSlider = false;
 
     connect(ui->horizontalSlider_Duration, &QSlider::sliderPressed, this, &MainWindow::on_horizontalSlider_Duration_sliderPressed);
     connect(ui->horizontalSlider_Duration, &QSlider::sliderReleased, this, &MainWindow::on_horizontalSlider_Duration_sliderReleased);
+    connect(ui->verticalSlider_Volume, &QSlider::valueChanged, this, &MainWindow::on_horizontalSlider_Volume_valueChanged);
 
     // Filtro de eventos para el botón de volumen
     ui->pushButton_Volume->installEventFilter(this);
@@ -132,7 +136,7 @@ void MainWindow::displayMedia(const QString& fileName, bool isVideo)
     {
         videoWidget->hide();
         albumArtLabel->show();
-        QPixmap albumArt(":/images/default_album_art.jpg"); // Placeholder
+        QPixmap albumArt(":/images/default.png"); // Placeholder
         albumArtLabel->setPixmap(albumArt.scaled(albumArtLabel->size(), Qt::KeepAspectRatio));
         Player->setVideoOutput(nullptr);
     }
@@ -197,6 +201,16 @@ void MainWindow::on_horizontalSlider_Duration_valueChanged(int value)
     }
 }
 
+// Funcion para ajustar la barra de volumen
+void MainWindow::toggleVolumeSlider(bool checked)
+{
+    if (checked) {
+        ui->verticalSlider_Volume->show();
+    } else {
+        ui->verticalSlider_Volume->hide();
+    }
+}
+
 // Retrocede la reproducción
 void MainWindow::on_pushButton_Seek_Backward_clicked()
 {
@@ -244,17 +258,23 @@ void MainWindow::hideVolumeSlider()
     ui->verticalSlider_Volume->setVisible(false);
 }
 
+// Ajuste en la función evento para la barra del volumen
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     if (watched == ui->pushButton_Volume)
     {
         if (event->type() == QEvent::Enter)
         {
-            showVolumeSlider();
+            ui->verticalSlider_Volume->show();
         }
         else if (event->type() == QEvent::Leave)
         {
-            hideVolumeSlider();
+            // Delay el hide para permitir interacciones
+            QTimer::singleShot(300, this, [this]() {
+                if (!ui->verticalSlider_Volume->underMouse() && !ui->pushButton_Volume->underMouse()) {
+                    ui->verticalSlider_Volume->hide();
+                }
+            });
         }
     }
     return QMainWindow::eventFilter(watched, event);
