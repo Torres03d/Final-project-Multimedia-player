@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    //Título de la ventana
+    // Título de la ventana
     this->setWindowTitle("Vector Sound");
 
     //Icono de la ventana
@@ -39,12 +39,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(timeUpdateTimer, &QTimer::timeout, this, &MainWindow::updateCurrentTimeDisplay);
     timeUpdateTimer->start();
 
-    // Conectares de señales del Player
+    // Conectores de señales del Player
     Player = new QMediaPlayer(this);
     audioOutput = new QAudioOutput();
     Player->setAudioOutput(audioOutput);
     Player->setVideoOutput(videoWidget);
-    
+
     // Conectores de señales para las barras
     connect(Player, &QMediaPlayer::durationChanged, this, &MainWindow::durationChanged);
     connect(Player, &QMediaPlayer::positionChanged, this, &MainWindow::positionChanged);
@@ -56,12 +56,26 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Filtro de eventos para el botón de volumen
     ui->pushButton_Volume->installEventFilter(this);
+
+    // Conectar mediaStatusChanged para manejar el fin de la reproducción
+    connect(Player, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::handleMediaStatusChanged);
 }
 
 // Destructor de la clase MainWindow
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+// Funcion para cunado se termina de reproducir o se resetea
+void MainWindow::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
+{
+    if (status == QMediaPlayer::EndOfMedia)
+    {
+        // Cambiar el ícono al de "play" cuando termine la reproducción
+        ui->pushButton_Play->setChecked(false);
+        ui->pushButton_Play->setIcon(QIcon(":/Icons/play.png"));
+    }
 }
 
 // Funcion para manejar los eventos de presión
@@ -119,8 +133,13 @@ void MainWindow::on_action_Open_triggered()
                                                     tr("Multimedia Files (*.mp3 *.mp4 *.wav *.avi)"));
     if (fileName.isEmpty())
         return;
+
     bool isVideo = fileName.endsWith(".mp4") || fileName.endsWith(".avi");
     displayMedia(fileName, isVideo);
+
+    // Reset the play button to "play" icon when a new file is opened
+    ui->pushButton_Play->setChecked(false);
+    ui->pushButton_Play->setIcon(QIcon(":/Icons/play.png"));
 }
 
 // Funcion para mostrar el archivo multimedia
@@ -165,7 +184,11 @@ void MainWindow::on_pushButton_Play_clicked()
 void MainWindow::on_pushButton_Repeat_clicked()
 {
     Player->stop();
-    disconnect(Player, &QMediaPlayer::positionChanged, this, &MainWindow::updateTime); // Desconectar actualización de tiempo en stop
+    disconnect(Player, &QMediaPlayer::positionChanged, this, &MainWindow::updateTime);
+
+    // Asegurarse de que el botón de reproducción muestre el ícono de "play"
+    ui->pushButton_Play->setChecked(false);
+    ui->pushButton_Play->setIcon(QIcon(":/Icons/play.png"));
 }
 
 // Funcion que maneja el click en el botón de volumen
