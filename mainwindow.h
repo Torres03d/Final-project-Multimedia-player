@@ -25,8 +25,9 @@ protected:
     void leaveEvent(QEvent *event) override;
 
 private slots:
-    void showVolumeSlider(); //LLamada para mostrar la barra de volumen
-    void hideVolumeSlider(); //LLamada para ocultar la barra de volumen
+    void handleMediaStatusChanged(QMediaPlayer::MediaStatus status); // Llamada para el cuando termina o se reinicia la reproduccion
+    void showVolumeSlider(); // Llamada para mostrar la barra de volumen
+    void hideVolumeSlider(); // Llamada para ocultar la barra de volumen
     void on_horizontalSlider_Duration_sliderPressed(); // Llamada cuando se cambia la barra de duracion
     void on_horizontalSlider_Duration_sliderReleased(); // Llamada ajustar el audio al precionar barra de duracion
     void updateTime(); // Slot para actualizar el contador
