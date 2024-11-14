@@ -8,6 +8,5 @@
         <file>Icons/repeat.png</file>
         <file>Icons/volume.png</file>
         <file>Icons/logo.png</file>
-        <file>Icons/default.png</file>
     </qresource>
 </RCC>
